@@ -1,12 +1,19 @@
 #!/bin/bash
 
-echo "BitMEX BTChip Signer setup."
+echo -e "\nBitMEX BTChip Signer setup"
+echo -e "--------------------------\n"
+
+DIR=`dirname $0`
 
 git submodule init
 git submodule update
 
-cd BitcoinArmory
-touch __init__.py
+cd $DIR/BitcoinArmory
 make
+cd ..
 
-echo "Setup done."
+if [ ! -f ./settings.py ]; then
+  cp settings.py.example settings.py
+  echo "Edit settings.py before getting started."
+fi
+echo -e "\nSetup done.\n"

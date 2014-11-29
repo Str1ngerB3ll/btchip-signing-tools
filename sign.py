@@ -37,8 +37,8 @@ tx = a.unserializeAscii(SIGCOLLECT)
 
 txJSON = tx.toJSONMap();
 
-# print "JSON:\n"
-# print pp.pprint(txJSON)
+print "JSON:\n"
+pp.pprint(txJSON)
 
 print "\nTransaction summary:\n"
 tx.pprint()
@@ -55,13 +55,21 @@ OUTPUT = get_output_script(outputs)
 # print binascii.hexlify(OUTPUT)
 
 REDEEMSCRIPT = txJSON['inputs'][0]['p2shscript']
+print REDEEMSCRIPT
 
-# Get Input index (TODO?)
-UTXO_INDEX = 0
+# Get Input index (IMPORTANT! We have to sign the correct output of the prev. tx)
+UTXO_INDEX = txJSON['inputs'][0]['supporttxoutindex']
 
 # Get Dongle
 dongle = getDongle(True)
 app = btchip(dongle)
+
+try:
+  # 111 is testnet bitcoin key version
+  # 196 is p2sh testnet type
+  app.setup(btchip.OPERATION_MODE_RELAXED_WALLET, btchip.FEATURE_RFC6979|btchip.FEATURE_NO_2FA_P2SH, 111, 196, "1234", None, btchip.QWERTY_KEYMAP, SEED)
+except:
+  pass
 
 # Authenticate
 pin = raw_input("PIN: ")
@@ -75,7 +83,6 @@ print "Your pubkey: " + pubKey
 print "Getting input from transaction..."
 transaction = bitcoinTransaction(UTX)
 print str(transaction)
-print "The next command breaks, because the length is > 256"
 trustedInput = app.getTrustedInput(transaction, UTXO_INDEX)
 
 # Start composing transaction
@@ -95,8 +102,10 @@ print "\n\nSignature summary and signing status:\n\n"
 tx.pprint()
 tx.evaluateSigningStatus().pprint()
 
+doVerifySigs = tx.evaluateSigningStatus().canBroadcast
+
 print "\n\nRaw transaction:\n\n"
-print binary_to_hex(tx.getSignedPyTx(doVerifySigs=False).serialize())
+print binary_to_hex(tx.getSignedPyTx(doVerifySigs=doVerifySigs).serialize())
 
 print "\n\nSigcollect below:\n\n"
 print tx.serializeAscii()

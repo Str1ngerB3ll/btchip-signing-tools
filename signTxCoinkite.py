@@ -95,7 +95,12 @@ def signCoinkiteJSON(app, dongle, requestData):
       pubKeyRaw = app.getWalletPublicKey(keyPath)
       wallets[path] = str(compress_public_key(pubKeyRaw['publicKey'])).encode('hex')
       print "Your pubkey for %s: %s" % (keyPath, wallets[path])
-      assert pubKeyRaw['address'] == keyHash[0]
+      try:
+        assert pubKeyRaw['address'] == keyHash[0]
+      except:
+        print "ERROR: Attempting to sign with pubkey " + pubKeyRaw['address'] + " but this transaction expects to " +\
+          "be signed by " + keyHash[0] + ". Exiting..."
+        exit(1)
       signature = app.untrustedHashSign(keyPath, "")
       result['signatures'].append([binascii.hexlify(signature), signInput[1], signInput[0]])
 

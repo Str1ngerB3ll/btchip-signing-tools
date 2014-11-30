@@ -1,4 +1,4 @@
-import os, sys, inspect
+import os, sys, inspect, base64
 # Add ./btchip-python to path so it works as if we were importing it from the inside.
 cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"btchip-python")))
 if cmd_subfolder not in sys.path:
@@ -7,36 +7,59 @@ if cmd_subfolder not in sys.path:
 from btchip.btchip import *
 from btchip.btchipUtils import *
 from getKey import parsePath
-import getpass, binascii
+import getpass, hashlib
+from base64 import b64encode
 
-if len(sys.argv) < 2:
-  print "Usage: python signMessage.py <path>"
-  exit(1)
+def main():
+  if len(sys.argv) < 2:
+    print "Usage: python signMessage.py <path>"
+    exit(1)
 
-path = parsePath(sys.argv[1])
+  path = parsePath(sys.argv[1])
 
-dongle = getDongle(True)
-app = btchip(dongle)
+  dongle = getDongle(True)
+  app = btchip(dongle)
 
-# Authenticate
-pin = getpass.getpass("PIN: ")
-app.verifyPin(pin)
+  # Authenticate
+  pin = getpass.getpass("PIN: ")
+  app.verifyPin(pin)
 
-# Start signing
-app.signMessagePrepare(path, raw_input("Message: "))
+  print "Signed message: " + signMessage(app, dongle, path, raw_input("Message: "))
 
-print "Signing message with key at path " + path
+def signMessage(app, dongle, path, data):
+    app.signMessagePrepare(path, data)
 
-dongle.close()
-# Wait for the second factor confirmation
-# Done on the same application for test purposes, this is typically done in another window
-# or another computer for bigger transactions
-response = raw_input("Powercycle the dongle to get the second factor and powercycle again. " + \
-  "If it doesn't match what you expect, press <ctrl-c>. \n")
+    print "Signing message with key at path " + path
 
-# Get a reference to the dongle again, as it was disconnected
-dongle = getDongle(True)
-app = btchip(dongle)
-# Compute the signature
-signature = app.signMessageSign(response[len(response) - 4:])
-print "Signature: " + binascii.hexlify(signature)
+    dongle.close()
+    # Wait for the second factor confirmation
+    # Done on the same application for test purposes, this is typically done in another window
+    # or another computer for bigger transactions
+    response = raw_input("Powercycle the dongle to get the second factor and powercycle again. " + \
+      "If it doesn't match what you expect, press <ctrl-c>. \n")
+
+    # Get a reference to the dongle again, as it was disconnected
+    dongle = getDongle(True)
+    app = btchip(dongle)
+    # Compute the signature
+    signature = app.signMessageSign(response[len(response) - 4:])
+    
+    # Parse the ASN.1 signature
+
+    rLength = signature[3]
+    r = signature[4 : 4 + rLength]
+    sLength = signature[4 + rLength + 1]
+    s = signature[4 + rLength + 2:]
+    if rLength == 33:
+        r = r[1:]
+    if sLength == 33:
+        s = s[1:]
+    r = str(r)
+    s = str(s)
+
+    # And convert it
+
+    return b64encode(chr(27 + 4 + (signature[0] & 0x01)) + r + s)
+
+if __name__ == "__main__":
+  main()

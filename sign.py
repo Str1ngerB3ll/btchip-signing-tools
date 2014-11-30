@@ -102,10 +102,14 @@ print "\n\nSignature summary and signing status:\n\n"
 tx.pprint()
 tx.evaluateSigningStatus().pprint()
 
-doVerifySigs = tx.evaluateSigningStatus().canBroadcast
-
 print "\n\nRaw transaction:\n\n"
-print binary_to_hex(tx.getSignedPyTx(doVerifySigs=doVerifySigs).serialize())
+
+# doVerifySigs = tx.evaluateSigningStatus().canBroadcast
+# print binary_to_hex(tx.getSignedPyTx(doVerifySigs=doVerifySigs).serialize())
+
+# Unfortunately Armory doesn't appear to be able to verify these, so you're best off broadcasting the raw
+# tx via the bitcoind CLI.
+print binary_to_hex(tx.getSignedPyTx(doVerifySigs=False).serialize())
 
 print "\n\nSigcollect below:\n\n"
 print tx.serializeAscii()

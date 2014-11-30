@@ -19,14 +19,14 @@ def main():
   pin = getpass.getpass("PIN: ")
   app.verifyPin(pin)
 
-  printPath(parsedPath)
+  printPath(app, parsedPath)
 
 def parsePath(bip32Path):
   bip32Path = re.sub(r'^m/', '', bip32Path)
   bip32Path = re.sub(r'(\d+)h', "\g<1>'", bip32Path)
   return bip32Path
 
-def printPath(path):
+def printPath(app, path):
   publicKey = app.getWalletPublicKey(path)
   print "Path: " + path
   print "Full Public Key: " + str(publicKey['publicKey']).encode('hex')

@@ -68,12 +68,15 @@ def getXPUB(app, bip32_path, pubKey):
   else:
     childnum = 0x80000000 | int(lastChild[0])    
 
-  xpub = "0488B21E".decode('hex') + chr(depth) + i4b(fingerprint) + i4b(childnum) + \
-    str(nodeData['chainCode']) + str(publicKey)
-  tpub = "043587CF".decode('hex') + chr(depth) + i4b(fingerprint) + i4b(childnum) + \
-    str(nodeData['chainCode']) + str(publicKey)
+  xpub = createXPUB(depth, fingerprint, childnum, nodeData['chainCode'], publicKey)
+  tpub = createXPUB(depth, fingerprint, childnum, nodeData['chainCode'], publicKey, testnet=True)
 
   return EncodeBase58Check(xpub), EncodeBase58Check(tpub)
+
+def createXPUB(depth, fingerprint, childnum, chainCode, publicKey, testnet=False):
+  magic = "043587CF" if testnet else "0488B21E"
+  return magic.decode('hex') + chr(depth) + i4b(fingerprint) + i4b(childnum) + \
+      str(chainCode) + str(publicKey)
 
 # From Electrum
 

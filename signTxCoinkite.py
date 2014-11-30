@@ -24,7 +24,15 @@ def main():
   signData = json.load(f)
   requestData = json.loads(signData['contents'])
 
-  body = signCoinkiteJSON(requestData)
+  # Get Dongle
+  dongle = getDongle(True)
+  app = btchip(dongle)
+
+  # Authenticate with dongle
+  pin = getpass.getpass("PIN: ")
+  app.verifyPin(pin)
+
+  body = signCoinkiteJSON(app, dongle, requestData)
 
   fName = 'output-' + requestData['request'] + '.json'
   fOut = open(fName, 'w')
@@ -35,15 +43,7 @@ def main():
 
   print json.dumps(body)
 
-def signCoinkiteJSON(requestData):
-  # Get Dongle
-  dongle = getDongle(True)
-  app = btchip(dongle)
-
-  # Authenticate with dongle
-  pin = getpass.getpass("PIN: ")
-  app.verifyPin(pin)
-
+def signCoinkiteJSON(app, dongle, requestData):
   pp.pprint(requestData)
 
   # Keys: 
@@ -67,7 +67,8 @@ def signCoinkiteJSON(requestData):
   # Create outputs from tx
   outputs = []
   for output in txObj.txs_out:
-    outputs.append([str(output.coin_value), bytearray(output.script)])
+    outputs.append([str(output.coin_value / 1e8), bytearray(output.script)])
+  print outputs
   OUTPUT = get_output_script(outputs)
 
   wallets = {}
@@ -96,7 +97,7 @@ def signCoinkiteJSON(requestData):
       print "Your pubkey for %s: %s" % (keyPath, wallets[path])
       assert pubKeyRaw['address'] == keyHash[0]
       signature = app.untrustedHashSign(keyPath, "")
-      result['signatures'].append([binascii.hexlify(signature), signInput[1].encode('hex'), signInput[0]])
+      result['signatures'].append([binascii.hexlify(signature), signInput[1], signInput[0]])
 
 
   body = {}
@@ -104,19 +105,14 @@ def signCoinkiteJSON(requestData):
   body['content'] = json.dumps(result)
 
   rootKey = app.getWalletPublicKey(settings.KEYPATH_BASE)
-  messageHash = Hash(body['content'])
-  print "hash: " + messageHash.encode('hex')
-  body['signature'] = signMessage(app, dongle, settings.KEYPATH_BASE, messageHash.encode('hex'))
+  messageHash = sha256(body['content'])
+  body['signature_sha256'] = signMessage(app, dongle, settings.KEYPATH_BASE, messageHash.encode('hex'))
   body['signed_by'] = rootKey['address'] # Bug, should use network
 
   return body
 
 def sha256(x):
   return hashlib.sha256(x).digest()
-
-def Hash(x):
-  if type(x) is unicode: x=x.encode('utf-8')
-  return sha256(sha256(x))
 
 if __name__ == "__main__":
   main()

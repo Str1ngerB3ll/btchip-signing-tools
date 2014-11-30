@@ -51,6 +51,7 @@ UTX = bytearray(txJSON['inputs'][0]['supporttx'].decode('hex'))
 outputs = []
 for output in txJSON['outputs']:
   outputs.append([str(output['txoutvalue'] / 10e7), bytearray(output['txoutscript'].decode('hex'))])
+print outputs
 OUTPUT = get_output_script(outputs)
 # print binascii.hexlify(OUTPUT)
 

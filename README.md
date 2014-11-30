@@ -45,3 +45,16 @@ xpub:    xpub6DLDS6aRe3ZwHAEwTHBXptdKGCi14kuXggBLgb3rVnSFphA2FCMFBKUpPPkYU54Aphi
 addr:    1C1osyRQEJr6gZ6ynxp9nLLGe6DccZ8pRK
 pubkey:  02ce5709455899ac0593910721431224dfeb628c1f6f889baf1463d22289e3e111
 ```
+
+
+To get tprv from xprv:
+
+```
+ku xprv9zLs2b3Xog1e4gAUMFeXTkgaiAsWfJBgKTFjtCeEwSuGwtpshf2zdXALY7bFSaNNXGJRA98Xw9gaLtBMsDpSJDLDBomheqNqKtLyPga2uMG --override-network XTN
+```
+
+To get xprv:
+
+```
+echo 1762F9A3007DBC825D0DD9958B04880284C88A10C57CF569BB3DADF7B1027F2D | bip32gen -i entropy -o xpub,addr,pubkey,xprv -v -f - -F - -x -X m/44h/1h/0h -n 256
+```

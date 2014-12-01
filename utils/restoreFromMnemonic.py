@@ -2,7 +2,7 @@ import mnemonic, binascii, getpass, sys
 from btchip.btchip import *
 from btchip.btchipUtils import *
 
-isTestnet = len(sys.argv) > 2 and sys.argv[2] == '--testnet'
+isTestnet = len(sys.argv) > 1 and sys.argv[1] == '--testnet'
 
 M = mnemonic.Mnemonic("english")
 

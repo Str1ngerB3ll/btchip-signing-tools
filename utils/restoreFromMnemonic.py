@@ -24,8 +24,10 @@ try:
     app.setup(btchip.OPERATION_MODE_RELAXED_WALLET, btchip.FEATURE_RFC6979|btchip.FEATURE_NO_2FA_P2SH, 111, 196, PIN, None, btchip.QWERTY_KEYMAP, SEED)
   else:
     app.setup(btchip.OPERATION_MODE_RELAXED_WALLET, btchip.FEATURE_RFC6979|btchip.FEATURE_NO_2FA_P2SH, 0, 5, PIN, None, btchip.QWERTY_KEYMAP, SEED)
-except:
-  pass
+except BTChipException as e:
+  if e.sw == 0x6985:
+    print "ERROR: Chip is already set up. If you want to set it up with a new seed, run resetChip.py first."
+  exit(1)
   
 # Authenticate to stop key from emitting the seed anymore
 app.verifyPin(PIN)

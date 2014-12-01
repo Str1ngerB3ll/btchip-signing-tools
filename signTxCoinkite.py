@@ -1,13 +1,13 @@
-import os, sys, inspect
-import bitcoinrpc
+import os, sys, inspect, struct
 from btchip.btchip import *
 from btchip.btchipUtils import *
+from btchip.bitcoinTransaction import *
+from btchip.bitcoinVarint import *
 import simplejson as json
 import settings, pprint, getpass, binascii, hashlib, sys, re
 from signMessage import signMessage
 
 pp = pprint.PrettyPrinter(indent=2)
-rpcConn = None
 
 def main():
 
@@ -47,41 +47,37 @@ def signCoinkiteJSON(app, dongle, requestData, promptTx=True):
   result['request'] = requestData['request']
   result['signatures'] = []
 
-  # Create outputs from new tx
-  newTxObj = decodeRawTX(requestData['raw_unsigned_txn'])
-
+  transaction = bitcoinTransaction(bytearray(requestData['raw_unsigned_txn'].decode('hex')))
+  
   if promptTx:
     print "Transaction we're signing: "
-    print json.dumps(newTxObj, indent=2)
+    print transaction
     print "Please press <enter> to confirm this transaction is expected, or <ctrl-c> to exit."
     raw_input("")
 
-  outputs = []
-  for output in newTxObj['vout']:
-    script = output['scriptPubKey']['hex']
-    outputs.append([output['value'], bytearray(script.decode('hex'))])
-    print "Adding output: %s to %s" % (output['value'], script)
-  OUTPUT = get_output_script(outputs)
+  OUTPUT = bytearray("")
+  writeVarint(len(transaction.outputs), OUTPUT)
+  for troutput in transaction.outputs:
+  	OUTPUT.extend(troutput.serialize())
 
   wallets = {}
 
   # Sign each input
   for i, signInput in enumerate(requestData['inputs']):
 
-    # Get transaction that generated this input (prev transaction)
-    print "Getting previous transaction..."
-    prevTXID = requestData['input_info'][i]['txn']
-    UTX = bytearray(getRawTX(prevTXID).decode('hex'))
-    # Get the input
-    print "Getting input from transaction..."
-    transaction = bitcoinTransaction(UTX)
-    UTXO_INDEX = requestData['input_info'][i]['out_num']
-    trustedInput = app.getTrustedInput(transaction, UTXO_INDEX)
+    # Get transaction info that generated this input (prevout)
+    prevtx = bytearray(requestData['input_info'][i]['txn'].decode('hex'))
+    index = requestData['input_info'][i]['out_num']
+    transactionInput = {}
+    transactionInput['trustedInput'] = False
+    value = prevtx[::-1]
+    value.extend(bytearray(struct.pack('<I', index)))
+    transactionInput['value'] = value
 
     # Start composing transaction
     print "Creating transaction on BTChip..."
     redeemScript = requestData['redeem_scripts'][signInput[0]]['redeem']
-    app.startUntrustedTransaction(True, 0, [trustedInput], bytearray(redeemScript.decode('hex')))
+    app.startUntrustedTransaction(True, 0, [transactionInput], bytearray(redeemScript.decode('hex')))
     app.finalizeInputFull(OUTPUT)
 
     # Get pub key for each input
@@ -117,22 +113,6 @@ def createReturnJSON(app, dongle, result):
 
 def sha256(x):
   return hashlib.sha256(x).digest()
-
-def getRawTX(txID):
-  return getRPCConn().getrawtransaction(txID, verbose=False)
-
-def decodeRawTX(rawTX):
-  return getRPCConn().decoderawtransaction(rawTX)
-
-def describeRawTX(rawTX):
-  return json.dumps(decodeRawTX(rawTX), indent=2)
-
-def getRPCConn():
-  global rpcConn
-  if not rpcConn:
-    rpcConn = bitcoinrpc.connect_to_remote(settings.RPC_USER, settings.RPC_PASSWORD, host=settings.RPC_HOST, \
-      port=settings.RPC_PORT, use_https=False)
-  return rpcConn
 
 if __name__ == "__main__":
   main()

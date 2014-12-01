@@ -14,7 +14,6 @@ def main():
 
   if len(sys.argv) < 2:
     print "Usage: python getKey.py <path>"
-    print "Flags: --testnet"
     exit(1)
 
   # Get path from cli

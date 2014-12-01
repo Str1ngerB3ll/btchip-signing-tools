@@ -13,10 +13,13 @@ setup(name='btchip-signer',
       url='',
       install_requires=[
           'bitcoin-python',
-          'mnemonic',
+          'mnemonic==0.9',
           'btchip-python==0.1.10'
       ],
-      dependency_links=['https://github.com/STRML/btchip-python/tarball/master#egg=btchip-python-0.1.10']
+      dependency_links=[
+        'https://github.com/STRML/btchip-python/tarball/master#egg=btchip-python-0.1.10',
+        'https://github.com/STRML/python-mnemonic/tarball/master#egg=mnemonic-0.9',
+      ]
      )
 
 print "Copy settings.py.example to settings.py and edit before getting started."

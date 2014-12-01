@@ -9,6 +9,30 @@ To run the test code:
 python sign.py --testnet
 ```
 
+Setting up a new dongle
+-----------------------
+
+Fresh out of the box, the chip just needs to be loaded with a seed. If it already has one, run 
+`python utils/resetChip.py`.
+
+```
+# Add --testnet to build a testnet key. They can only operate on one network at a time.
+python utils/setupMnemonic.py
+```
+
+You can back up the mneomonic however you like. If you want to restore, run `python utils/restoreFromMnemnonic.py`.
+The restore script also accepts the `--testnet` flag.
+
+To generate an xpub/tpub for use with services like Coinkite:
+
+```
+# BIP32 roots are using the BIP44 standard, but they could be anything
+# Mainnet
+python utils/getKey.py 44h/0h/0h
+# Testnet
+python utils/getKey.py 44h/1h/0h
+```
+
 
 Notes on xpub/xpriv
 -------------------

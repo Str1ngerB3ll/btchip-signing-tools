@@ -2,6 +2,8 @@ import mnemonic, binascii, getpass
 from btchip.btchip import *
 from btchip.btchipUtils import *
 
+isTestnet = len(sys.argv) > 2 and sys.argv[2] == '--testnet'
+
 M = mnemonic.Mnemonic("english")
 
 print "This script is for restoring a new BTChip from a mnemonic seed."
@@ -15,13 +17,13 @@ SEED = bytearray(seed.decode('hex'))
 
 # Setup
 PIN = getpass.getpass("New PIN: ")
-dongle = getDongle(True)
+dongle = getDongle(False)
 app = btchip(dongle)
 try:
-  # Testnet
-  app.setup(btchip.OPERATION_MODE_RELAXED_WALLET, btchip.FEATURE_RFC6979|btchip.FEATURE_NO_2FA_P2SH, 111, 196, PIN, None, btchip.QWERTY_KEYMAP, None)
-  # Mainnet
-  # app.setup(btchip.OPERATION_MODE_RELAXED_WALLET, btchip.FEATURE_RFC6979|btchip.FEATURE_NO_2FA_P2SH, 0, 5, PIN, None, btchip.QWERTY_KEYMAP, SEED)
+  if isTestnet:
+    app.setup(btchip.OPERATION_MODE_RELAXED_WALLET, btchip.FEATURE_RFC6979|btchip.FEATURE_NO_2FA_P2SH, 111, 196, PIN, None, btchip.QWERTY_KEYMAP, SEED)
+  else:
+    app.setup(btchip.OPERATION_MODE_RELAXED_WALLET, btchip.FEATURE_RFC6979|btchip.FEATURE_NO_2FA_P2SH, 0, 5, PIN, None, btchip.QWERTY_KEYMAP, SEED)
 except:
   pass
   

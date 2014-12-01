@@ -3,4 +3,4 @@ RPC_PASSWORD="password"
 RPC_HOST="localhost"
 RPC_PORT=18332
 
-KEYPATH_BASE="44'/1'/1'"
+KEYPATH_BASE="44'/1'/0'"

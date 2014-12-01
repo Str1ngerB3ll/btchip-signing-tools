@@ -22,3 +22,8 @@ python setup.py install
 # Setup this module
 cd ..
 python setup.py develop
+
+if [ ! -f settings.py ]; then
+  cp settings.py.example settings.py
+  echo "Please example settings.py and fit to your environment."
+fi

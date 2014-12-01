@@ -45,9 +45,8 @@ def main():
 
   print "Output written to " + fName
 
-  print json.dumps(body)
-
 def signCoinkiteJSON(app, dongle, requestData, promptTx=True):
+  # print json.dumps(requestData, indent=2) # print req data
   result = {}
   result['cosigner'] = requestData['cosigner']
   result['request'] = requestData['request']
@@ -78,13 +77,11 @@ def signCoinkiteJSON(app, dongle, requestData, promptTx=True):
     print "Getting previous transaction..."
     prevTXID = requestData['input_info'][i]['txn']
     UTX = bytearray(getRawTX(prevTXID).decode('hex'))
-    # UTX = bytearray(requestData['raw_unsigned_txn'].decode('hex'))
     # Get the input
     print "Getting input from transaction..."
     transaction = bitcoinTransaction(UTX)
     UTXO_INDEX = requestData['input_info'][i]['out_num']
     trustedInput = app.getTrustedInput(transaction, UTXO_INDEX)
-    print binascii.hexlify(trustedInput['value'])
 
     # Start composing transaction
     print "Creating transaction on BTChip..."
@@ -117,6 +114,7 @@ def createReturnJSON(app, dongle, result):
 
   rootKey = app.getWalletPublicKey(settings.KEYPATH_BASE)
   messageHash = sha256(body['content'])
+  print "Message hash: %s. Ensure this hash matches what is returned by the dongle." % messageHash.encode('hex')
   body['signature_sha256'] = signMessage(app, dongle, settings.KEYPATH_BASE, messageHash.encode('hex'))
   body['signed_by'] = rootKey['address'] # Bug, should use network
 

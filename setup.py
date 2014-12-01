@@ -14,7 +14,7 @@ setup(name='btchip-signer',
       install_requires=[
           'bitcoin-python',
           'mnemonic==0.9',
-          'btchip-python==0.1.10',
+          'btchip-python==0.1.11',
           'hidapi',
           'simplejson'
       ],

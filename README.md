@@ -33,6 +33,18 @@ python utils/getKey.py 44h/0h/0h
 python utils/getKey.py 44h/1h/0h
 ```
 
+Notes on BIP32 paths
+--------------------
+
+There are two competing formats for BIP32 paths. These are equivalent:
+
+```
+m/44h/0h/0h
+44'/0'/0'
+```
+
+The `h` or `'` means it's a hardened key. For more on that, see the 
+[BIP32 Spec](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#implications).
 
 Notes on xpub/xpriv
 -------------------

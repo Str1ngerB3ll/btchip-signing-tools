@@ -21,7 +21,7 @@ def main():
   parsedPath = parsePath(inputPath)
 
   # Optional setup
-  dongle = getDongle(True)
+  dongle = getDongle(False)
   app = btchip(dongle)
 
   # Authenticate

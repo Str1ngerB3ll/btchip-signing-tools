@@ -58,7 +58,7 @@ print REDEEMSCRIPT
 UTXO_INDEX = txJSON['inputs'][0]['supporttxoutindex']
 
 # Get Dongle
-dongle = getDongle(True)
+dongle = getDongle(False)
 app = btchip(dongle)
 
 try:

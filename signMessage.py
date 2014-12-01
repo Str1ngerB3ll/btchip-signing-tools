@@ -17,7 +17,7 @@ def main():
 
   path = parsePath(sys.argv[1])
 
-  dongle = getDongle(True)
+  dongle = getDongle(False)
   app = btchip(dongle)
 
   # Authenticate
@@ -40,7 +40,7 @@ def signMessage(app, dongle, path, data):
   return _sign(path, response)
 
 def prompt2FA():
-  response = raw_input("Powercycle the dongle to get the second factor and powercycle again. " + \
+  response = raw_input("Powercycle the dongle to get the second factor and powercycle again. Wait for the chip to type. " + \
     "If it doesn't match what you expect, press <ctrl-c>. \n")
   while not len(response):
     print "Warning: Chip not powercycled, please powercycle the chip."

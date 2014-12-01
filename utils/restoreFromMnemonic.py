@@ -1,4 +1,4 @@
-import mnemonic, binascii, getpass
+import mnemonic, binascii, getpass, sys
 from btchip.btchip import *
 from btchip.btchipUtils import *
 

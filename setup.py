@@ -15,7 +15,8 @@ setup(name='btchip-signer',
           'bitcoin-python',
           'mnemonic==0.9',
           'btchip-python==0.1.10',
-          'hidapi'
+          'hidapi',
+          'simplejson'
       ],
       dependency_links=[
         'https://github.com/STRML/btchip-python/tarball/master#egg=btchip-python-0.1.10',

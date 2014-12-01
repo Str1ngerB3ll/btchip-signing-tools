@@ -32,7 +32,8 @@ def main():
   pin = getpass.getpass("PIN: ")
   app.verifyPin(pin)
 
-  body = signCoinkiteJSON(app, dongle, requestData)
+  result = signCoinkiteJSON(app, dongle, requestData)
+  body = createReturnJSON(app, dongle, result)
 
   fName = 'output-' + requestData['request'] + '.json'
   fOut = open(fName, 'w')
@@ -104,7 +105,9 @@ def signCoinkiteJSON(app, dongle, requestData):
       signature = app.untrustedHashSign(keyPath, "")
       result['signatures'].append([binascii.hexlify(signature), signInput[1], signInput[0]])
 
+  return result
 
+def createReturnJSON(app, result):
   body = {}
   body['_humans'] = "Upload this set of signatures to Coinkite."
   body['content'] = json.dumps(result)

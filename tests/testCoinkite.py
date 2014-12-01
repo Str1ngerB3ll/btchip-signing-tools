@@ -1,6 +1,6 @@
 from btchip.btchip import *
 from btchip.btchipUtils import *
-from signTxCoinkite import signCoinkiteJSON
+from signTxCoinkite import signCoinkiteJSON, createReturnJSON
 from os.path import dirname, join
 import json, binascii
 
@@ -14,6 +14,8 @@ try:
 except:
   pass
 
+app.verifyPin("1234")
+
 # Open fixtures
 here = dirname(__file__)
 inPath = here + "/fixtures/sign.json"
@@ -25,7 +27,7 @@ f = open(refPath, 'r')
 refData = json.load(f)
 
 # Sign data and compare to reference
-result = signCoinkiteJSON(app, dongle, requestData)
+result = signCoinkiteJSON(app, dongle, requestData, promptTx=False)
 
 #verify
 print json.dumps(result)
@@ -37,7 +39,7 @@ if EXPECTED <> signature:
 
 outData = createReturnJSON(app, dongle, result)
 
-if json.dumps(outData) <> json.dumps(refData):
+if outData <> refData:
   print "Got:      " + json.dumps(outData)
   print "Expected: " + json.dumps(refData)
   raise Exception("Generated JSON doesn't match reference!")

@@ -12,7 +12,8 @@ setup(name='btchip-signer',
       author_email='sam@bitmex.com',
       url='',
       install_requires=[
-          'pycoin'
+          'pycoin',
+          'bitcoin-python'
       ],
       dependency_links=['https://github.com/LedgerHQ/btchip-python/tarball/master#egg=package-1.0']
      )

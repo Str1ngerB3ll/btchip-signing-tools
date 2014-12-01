@@ -38,7 +38,7 @@ def main():
   result = signCoinkiteJSON(app, dongle, requestData)
   body = createReturnJSON(app, dongle, result)
 
-  fName = 'output-' + requestData['request'] + '.json'
+  fName = 'output-' + requestData['request'] + '-' + requestData['cosigner'] + '.json'
   fOut = open(fName, 'w')
   fOut.write(json.dumps(body))
   fOut.close()

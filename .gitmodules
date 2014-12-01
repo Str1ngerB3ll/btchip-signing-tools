@@ -1,6 +1,3 @@
-[submodule "btchip-python"]
-	path = btchip-python
-	url = git@github.com:LedgerHQ/btchip-python.git
 [submodule "BitcoinArmory"]
 	path = BitcoinArmory
 	url = git@github.com:etotheipi/BitcoinArmory.git

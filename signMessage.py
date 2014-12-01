@@ -6,7 +6,7 @@ if cmd_subfolder not in sys.path:
 
 from btchip.btchip import *
 from btchip.btchipUtils import *
-from getKey import parsePath
+from utils.getKey import parsePath
 import getpass, hashlib
 from base64 import b64encode
 

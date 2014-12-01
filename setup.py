@@ -12,11 +12,11 @@ setup(name='btchip-signer',
       author_email='sam@bitmex.com',
       url='',
       install_requires=[
-          'pycoin',
           'bitcoin-python',
-          'mnemonic'
+          'mnemonic',
+          'btchip-python==0.1.10'
       ],
-      dependency_links=['https://github.com/LedgerHQ/btchip-python/tarball/master#egg=package-1.0']
+      dependency_links=['https://github.com/STRML/btchip-python/tarball/master#egg=btchip-python-0.1.10']
      )
 
 print "Copy settings.py.example to settings.py and edit before getting started."

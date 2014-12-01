@@ -10,7 +10,7 @@ SEED = bytearray("1762F9A3007DBC825D0DD9958B04880284C88A10C57CF569BB3DADF7B1027F
 dongle = getDongle(True)
 app = btchip(dongle)
 try:
-  app.setup(btchip.OPERATION_MODE_RELAXED_WALLET, btchip.FEATURE_RFC6979, 111, 196, "1234", None, btchip.QWERTY_KEYMAP, SEED)
+  app.setup(btchip.OPERATION_MODE_WALLET, btchip.FEATURE_RFC6979 | btchip.FEATURE_NO_2FA_P2SH, 111, 196, "1234", None, btchip.QWERTY_KEYMAP, SEED)
 except:
   pass
 

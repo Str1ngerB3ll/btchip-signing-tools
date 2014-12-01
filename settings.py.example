@@ -3,33 +3,4 @@ RPC_PASSWORD="password"
 RPC_HOST="localhost"
 RPC_PORT=18332
 
-SEED="1762F9A3008DBC825D0DD9958B04880284C88A10C57CF569BB3DADF7B1027F2C"
-KEYPATH="0'/0/0"
-# Note this is a testnet sigcollect, so it will fail the magic check
-# if you don't specify `--testnet` when invoking this script.
-SIGCOLLECT = """=====TXSIGCOLLECT-8jkccikU======================================
-AQAAAAsRCQcAAAAAAf3yAQEAAAALEQkHAIM4E374BgH68oOqiWv9gOu4QuKQEiJT
-ytoa/Lh2FgwAAAAA4AEAAAABPp/hKRfYVKDgk7mC6qRpkCieImLy25/BvT8TcY88
-gG4BAAAAa0gwRQIhAK9mjkguPtNj9Rs23autfN8g0XcQTJK4Z2pbFPURBxeWAiBs
-Ts1nVEx0xmicpFPiFX0MC4pGCNhZVkKdJhUnWlHGbwEhA3TbNZoARiba8vzxC4YB
-9fOUOISKZzPHaOiM4K05iued/////wKA570CAAAAABepFOKiJ+tA386QLywdgN2v
-p5ixbSLDh2yPyEYAAAAAGXapFK9Y8Jz2WyE7ub0YGpThM7StTWsniKwAAAAAaVIh
-AmlpSDARTksfbvVlzk77kzaBAy0wMzyA33E99rYKTGKDIQL0O5BenjXM0idX+u35
-7OtlLcm6GYo5BNQ/Qpje8CE+tSEDe541eN07VVnWE7wmQZMebOfVWp0IGwc0eIjX
-0XorkQJTrghKTEJlcmNaawD/////AyECaWlIMBFOSx9u9WXOTvuTNoEDLTAzPIDf
-cT32tgpMYoMAACEC9DuQXp41zNInV/rt+ezrZS3JuhmKOQTUP0KY3vAhPrUAACED
-e541eN07VVnWE7wmQZMebOfVWp0IGwc0eIjX0XorkQIAAAIyAQAAAAsRCQcXqRTA
-w7atpzLHl4gdAN5sNQ7sluPSIoeAlpgAAAAAAAAABE5PTkUAAAAyAQAAAAsRCQcX
-qRTioifrQN/OkC8sHYDdr6eYsW0iw4fwKSUCAAAAAAAABE5PTkUAAAA=
-================================================================"""
-
-
-# For reference, the lockbox this is related to (not required):
-LOCKBOX = """
-=====LOCKBOX-JLBercZk===========================================
-AQAAAAsRCQfJHW5UAAAAAARIVy4xAAIDNAEAAAALEQkHIQJpaUgwEU5LH271Zc5O
-+5M2gQMtMDM8gN9xPfa2CkxigwYwJy8wLzIAAAA0AQAAAAsRCQchAvQ7kF6eNczS
-J1f67fns62UtyboZijkE1D9CmN7wIT61BjAnLzAvMQAAADQBAAAACxEJByEDe541
-eN07VVnWE7wmQZMebOfVWp0IGwc0eIjX0XorkQIGMCcvMC8wAAAA
-================================================================
-"""
+KEYPATH_BASE="44'/1'/1'"

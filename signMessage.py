@@ -1,9 +1,4 @@
 import os, sys, inspect, base64
-# Add ./btchip-python to path so it works as if we were importing it from the inside.
-cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"btchip-python")))
-if cmd_subfolder not in sys.path:
-    sys.path.insert(0, cmd_subfolder)
-
 from btchip.btchip import *
 from btchip.btchipUtils import *
 from utils.getKey import parsePath
@@ -24,20 +19,21 @@ def main():
   pin = getpass.getpass("PIN: ")
   app.verifyPin(pin)
 
-  print "Signed message: " + signMessage(app, dongle, path, raw_input("Message: "))
+  print "Signed message: " + signMessage(app, dongle, path, raw_input("Message: "), use2FA=True)
 
-def signMessage(app, dongle, path, data):
+def signMessage(app, dongle, path, data, use2FA=True):
   app.signMessagePrepare(path, data)
 
   print "Signing message with key at path " + path
+  response = ""
+  if use2FA:
+    dongle.close()
+    # Wait for the second factor confirmation
+    # Done on the same application for test purposes, this is typically done in another window
+    # or another computer for bigger transactions
+    response = prompt2FA()
 
-  dongle.close()
-  # Wait for the second factor confirmation
-  # Done on the same application for test purposes, this is typically done in another window
-  # or another computer for bigger transactions
-  response = prompt2FA()
-
-  return _sign(path, response)
+  return _sign(app, dongle, path, response, use2FA)
 
 def prompt2FA():
   response = raw_input("Powercycle the dongle to get the second factor and powercycle again. Wait for the chip to type. " + \
@@ -47,17 +43,20 @@ def prompt2FA():
     response = prompt2FA()
   return response
 
-def _sign(path, response):
+def _sign(app, dongle, path, response, use2FA):
   # Get a reference to the dongle again, as it was disconnected
-  try:
-    dongle = getDongle(False)
-  except BTChipException as e:
-    raw_input("Powercycle the chip first, then press <enter>.")
-    return _sign(path, response)
+  if use2FA:
+    try:
+      dongle = getDongle(False)
+    except BTChipException as e:
+      raw_input("Powercycle the chip first, then press <enter>.")
+      return _sign(path, response)
+    
+    app = btchip(dongle)
 
-  app = btchip(dongle)
   # Compute the signature
-  signature = app.signMessageSign(response[len(response) - 4:])
+  pin = response[len(response) - 4] if response else ""
+  signature = app.signMessageSign(pin)
   
   # Parse the ASN.1 signature
 

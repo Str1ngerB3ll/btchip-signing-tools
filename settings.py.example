@@ -1,6 +1,3 @@
-RPC_USER="user"
-RPC_PASSWORD="password"
-RPC_HOST="localhost"
-RPC_PORT=18332
-
+# This is the BIP44 standard base for a Testnet HD Wallet
+# See https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 KEYPATH_BASE="44'/1'/0'"

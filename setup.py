@@ -12,14 +12,13 @@ setup(name='btchip-signer',
       author_email='sam@bitmex.com',
       url='',
       install_requires=[
-          'bitcoin-python',
           'mnemonic==0.9',
           'btchip-python==0.1.11',
           'hidapi',
           'simplejson'
       ],
       dependency_links=[
-        'https://github.com/STRML/btchip-python/tarball/master#egg=btchip-python-0.1.10',
+        'https://github.com/LedgerHQ/btchip-python/tarball/master#egg=btchip-python-0.1.11',
         'https://github.com/STRML/python-mnemonic/tarball/master#egg=mnemonic-0.9',
       ]
      )

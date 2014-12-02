@@ -36,8 +36,8 @@ def signMessage(app, dongle, path, data, use2FA=True):
   return _sign(app, dongle, path, response, use2FA)
 
 def prompt2FA():
-  response = raw_input("Powercycle the dongle to get the second factor and powercycle again. Wait for the chip to type. " + \
-    "If it doesn't match what you expect, press <ctrl-c>. \n")
+  response = raw_input("Powercycle the dongle to get the second factor, wait for the chip to type, and powercycle " + \
+    "again. Press <enter> after you see the PIN. If the message doesn't match what you expect, press <ctrl-c>. \n")
   while not len(response):
     print "Warning: Chip not powercycled, please powercycle the chip."
     response = prompt2FA()

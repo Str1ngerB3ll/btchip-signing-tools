@@ -55,7 +55,7 @@ def _sign(app, dongle, path, response, use2FA):
     app = btchip(dongle)
 
   # Compute the signature
-  pin = response[len(response) - 4] if response else ""
+  pin = response[len(response) - 4:] if response else ""
   signature = app.signMessageSign(pin)
   
   # Parse the ASN.1 signature

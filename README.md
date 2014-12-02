@@ -1,5 +1,12 @@
-BTChip-Armory-Signer
+BTChip-Signing-Tools
 ====================
+
+This is a collection of scripts used for signing messages and transactions with the BTChip HW.1 and Ledger Wallets.
+
+This is very much a work in progress, and many things will change. 
+
+Running
+=======
 
 To run the test code:
 

@@ -6,6 +6,7 @@ from btchip.bitcoinVarint import *
 import simplejson as json
 import settings, pprint, getpass, binascii, hashlib, sys, re
 from signMessage import signMessage
+import pycoin.scripts.tx, pycoin.tx, pycoin.tx.pay_to
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -48,15 +49,21 @@ def signCoinkiteJSON(app, dongle, requestData, promptTx=True):
   result['request'] = requestData['request']
   result['signatures'] = []
 
-  transaction = bitcoinTransaction(bytearray(requestData['raw_unsigned_txn'].decode('hex')))
-  
   if promptTx:
-    print "Transaction we're signing: "
-    print transaction
-    print "Please press <enter> to confirm this transaction is expected, or <ctrl-c> to exit."
+    # Give a nice overview of what's being signed and give the user a chance to bail.
+    isTestnet = requestData['xpubkey_display'][0:4] == 'tpub'
+    prettyPrintTX(requestData['raw_unsigned_txn'], isTestnet)
+    for i in requestData['redeem_scripts']:
+      print "Input scripts:"
+      prettyPrintRedeemScript(requestData['redeem_scripts'][i]['redeem'], isTestnet)
+    print "Please press <enter> to confirm this data is expected, or <ctrl-c> to exit."
     raw_input("")
 
+  # TODO verify change address is controlled by us
+  # TODO verify hash we're signing is from this tx
+
   OUTPUT = bytearray("")
+  transaction = bitcoinTransaction(bytearray(requestData['raw_unsigned_txn'].decode('hex')))
   writeVarint(len(transaction.outputs), OUTPUT)
   for troutput in transaction.outputs:
   	OUTPUT.extend(troutput.serialize())
@@ -66,12 +73,12 @@ def signCoinkiteJSON(app, dongle, requestData, promptTx=True):
   # Sign each input
   for i, signInput in enumerate(requestData['inputs']):
 
-    # Get transaction info that generated this input (prevout)
-    prevtx = bytearray(requestData['input_info'][i]['txn'].decode('hex'))
+    # Get the input from this transaction
+    tx = bytearray(requestData['input_info'][i]['txn'].decode('hex'))
     index = requestData['input_info'][i]['out_num']
     transactionInput = {}
     transactionInput['trustedInput'] = False
-    value = prevtx[::-1]
+    value = tx[::-1]
     value.extend(bytearray(struct.pack('<I', index)))
     transactionInput['value'] = value
 
@@ -111,6 +118,19 @@ def createReturnJSON(app, dongle, result):
   body['signed_by'] = rootKey['address'] # Bug, should use network
 
   return body
+
+def prettyPrintTX(txHex, isTestnet=False):
+  network = 'XTN' if isTestnet else 'BTC'
+  print "Transaction: "
+  tx = pycoin.tx.Tx.tx_from_hex(txHex)
+  print pycoin.scripts.tx.dump_tx(tx, network)
+
+def prettyPrintRedeemScript(script, isTestnet=False):
+  network = 'XTN' if isTestnet else 'BTC'
+  script = pycoin.tx.pay_to.script_obj_from_script(bytearray(script.decode('hex'))).info(network)
+  # pycoin transposed m and n for some reason
+  print "%d of %d, %s" % (script['n'], script['m'], json.dumps(script['addresses']))
+  pass
 
 def sha256(x):
   return hashlib.sha256(x).digest()

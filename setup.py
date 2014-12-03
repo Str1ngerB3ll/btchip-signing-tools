@@ -17,7 +17,8 @@ setup(name='btchip-signer',
           'hidapi',
           'simplejson',
           'requests',
-          'click'
+          'click',
+          'pycoin'
       ],
       dependency_links=[
         'https://github.com/LedgerHQ/btchip-python/tarball/master#egg=btchip-python-0.1.11',

@@ -1,3 +1,7 @@
 # This is the BIP44 standard base for a Testnet HD Wallet
 # See https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 KEYPATH_BASE="44'/1'/0'"
+
+COINKITE_API_KEY=""
+COINKITE_API_SECRET=""
+COINKITE_USER_REF=""

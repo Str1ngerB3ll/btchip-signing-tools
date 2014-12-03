@@ -10,9 +10,10 @@ from signMessage import signMessage
 pp = pprint.PrettyPrinter(indent=2)
 
 def main():
+  """This module signs the downloaded JSON files from Coinkite's co-signing page."""
 
   if len(sys.argv) < 2:
-    print "Usage: python signTxCoinkite.py <JSON path>"
+    print "Usage: python signTxCoinkiteJSON.py <JSON path>"
     exit(1)
 
   # Get path from cli

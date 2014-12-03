@@ -15,7 +15,9 @@ setup(name='btchip-signer',
           'mnemonic==0.9',
           'btchip-python==0.1.11',
           'hidapi',
-          'simplejson'
+          'simplejson',
+          'requests',
+          'click'
       ],
       dependency_links=[
         'https://github.com/LedgerHQ/btchip-python/tarball/master#egg=btchip-python-0.1.11',

@@ -18,7 +18,8 @@ setup(name='btchip-signer',
           'simplejson',
           'requests',
           'click',
-          'pycoin'
+          'pycoin',
+          'python-dateutil'
       ],
       dependency_links=[
         'https://github.com/LedgerHQ/btchip-python/tarball/master#egg=btchip-python-0.1.11',

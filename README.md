@@ -32,7 +32,7 @@ Fresh out of the box, the chip just needs to be loaded with a seed. If it alread
 python utils/setupMnemonic.py
 ```
 
-You can back up the mneomonic however you like. If you want to restore, run `python utils/restoreFromMnemnonic.py`.
+You can back up the mnemonic however you like. If you want to restore, run `python utils/restoreFromMnemonic.py`.
 The restore script also accepts the `--testnet` flag.
 
 To generate an xpub/tpub for use with services like Coinkite:

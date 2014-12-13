@@ -72,7 +72,6 @@ def signCoinkiteJSON(app, dongle, requestData, promptTx=True):
 
   # Sign each input
   for i, signInput in enumerate(requestData['inputs']):
-
     # Get the input from this transaction
     tx = bytearray(requestData['input_info'][i]['txn'].decode('hex'))
     index = requestData['input_info'][i]['out_num']
@@ -88,21 +87,23 @@ def signCoinkiteJSON(app, dongle, requestData, promptTx=True):
     app.startUntrustedTransaction(True, 0, [transactionInput], bytearray(redeemScript.decode('hex')))
     app.finalizeInputFull(OUTPUT)
 
-    # Get pub key for each input
-    for path, keyHash in requestData['req_keys'].iteritems():
-      print "Signing..."
-      keyPath = settings.KEYPATH_BASE + "/" + path
-      pubKeyRaw = app.getWalletPublicKey(keyPath)
-      wallets[path] = str(compress_public_key(pubKeyRaw['publicKey'])).encode('hex')
-      print "Your pubkey for %s: %s" % (keyPath, wallets[path])
-      try:
-        assert pubKeyRaw['address'] == keyHash[0]
-      except:
-        print "ERROR: Attempting to sign with pubkey " + pubKeyRaw['address'] + " but this transaction expects to " +\
-          "be signed by " + keyHash[0] + ". Exiting..."
-        exit(1)
-      signature = app.untrustedHashSign(keyPath, "")
-      result['signatures'].append([binascii.hexlify(signature), signInput[1], signInput[0]])
+    # Get pub key for this input
+    path = signInput[0]
+    keyHash = requestData['req_keys'][path]
+    print "Signing..."
+    keyPath = settings.KEYPATH_BASE + "/" + path
+    pubKeyRaw = app.getWalletPublicKey(keyPath)
+    wallets[path] = str(compress_public_key(pubKeyRaw['publicKey'])).encode('hex')
+    print "Your pubkey for %s: %s" % (keyPath, wallets[path])
+    try:
+      assert pubKeyRaw['address'] == keyHash[0]
+    except:
+      print "ERROR: Attempting to sign with pubkey " + pubKeyRaw['address'] + " but this transaction expects to " +\
+        "be signed by " + keyHash[0] + ". Exiting..."
+      exit(1)
+    signature = app.untrustedHashSign(keyPath, "")
+    result['signatures'].append([binascii.hexlify(signature), signInput[1], signInput[0]])
+    print result['signatures']
 
   return result
 

@@ -49,7 +49,8 @@ def main(coinkite_ref, user_refnum, api_key, api_secret):
   # print r.get('/v1/list/need_sigs')
 
   print txDetails(tx, co, printUserRefs=(not user_refnum))
-  assertCondition(not tx.detail.is_completed, "This transaction is already complete!")
+  # FIXME talk to Coinkite, this is sometimes true when it shouldn't be
+  # assertCondition(not tx.detail.is_completed, "This transaction is already complete!")
 
   if not user_refnum:
     user_refnum = raw_input("Your user ref (put this in settings.COINKITE_USER_REF in the future): ")

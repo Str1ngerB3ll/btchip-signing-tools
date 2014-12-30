@@ -72,19 +72,21 @@ def signCoinkiteJSON(app, dongle, requestData, promptTx=True):
 
   # Sign each input
   for i, signInput in enumerate(requestData['inputs']):
-    # Get the input from this transaction
-    tx = bytearray(requestData['input_info'][i]['txn'].decode('hex'))
-    index = requestData['input_info'][i]['out_num']
-    transactionInput = {}
-    transactionInput['trustedInput'] = False
-    value = tx[::-1]
-    value.extend(bytearray(struct.pack('<I', index)))
-    transactionInput['value'] = value
-
+    inputList = []
+    for j, signInput2 in enumerate(requestData['inputs']):
+    	# Get all inputs from this transaction
+    	tx = bytearray(requestData['input_info'][j]['txn'].decode('hex'))
+    	index = requestData['input_info'][j]['out_num']
+    	transactionInput = {}
+    	transactionInput['trustedInput'] = False
+    	value = tx[::-1]
+    	value.extend(bytearray(struct.pack('<I', index)))
+    	transactionInput['value'] = value
+	inputList.append(transactionInput)
     # Start composing transaction
     print "Creating transaction on BTChip..."
     redeemScript = requestData['redeem_scripts'][signInput[0]]['redeem']
-    app.startUntrustedTransaction(True, 0, [transactionInput], bytearray(redeemScript.decode('hex')))
+    app.startUntrustedTransaction(True, int(i), inputList, bytearray(redeemScript.decode('hex')))
     app.finalizeInputFull(OUTPUT)
 
     # Get pub key for this input

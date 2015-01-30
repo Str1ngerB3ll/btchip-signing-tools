@@ -42,6 +42,7 @@ def decodeSigCollect():
   print "\nRaw Transaction:\n"
   print binary_to_hex(tx.getSignedPyTx(doVerifySigs=False).serialize())
 
+  print "\nBroadcast Transaction:\nhttps://blockchain.info/pushtx\n"
 
 if __name__ == "__main__":
   decodeSigCollect()

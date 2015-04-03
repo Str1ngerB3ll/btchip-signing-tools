@@ -8,8 +8,17 @@ from armoryengine.Transaction import *
 from armoryengine.ArmoryUtils import binary_to_hex, hex_to_binary
 import json
 import settings
+from distutils import util
+import requests
 import pprint
 pp = pprint.PrettyPrinter(indent=2)
+
+
+def broadcastTx(rawTx):
+  r = requests.post("https://blockchain.info/pushtx", data={'tx': rawTx})
+  print "Transaction sent to blockchain.info. Response:"
+  print(r.text)
+
 
 # We've had SIGCOLLECTs fail to broadcaset from Armory. Recently we had one with multiple
 # signed inputs completely fail with a `string index out of range` error in Armory.
@@ -30,7 +39,7 @@ def decodeSigCollect():
   a = UnsignedTransaction()
   tx = a.unserializeAscii(SIGCOLLECT)
 
-  txJSON = tx.toJSONMap();
+  txJSON = tx.toJSONMap()
 
   pp.pprint(txJSON)
   print "\n"
@@ -38,9 +47,20 @@ def decodeSigCollect():
   print "\nTransaction summary:\n"
   tx.pprint()
   tx.evaluateSigningStatus().pprint()
+  print "\n"
+
+  raw = binary_to_hex(tx.getSignedPyTx(doVerifySigs=False).serialize())
+  if tx.evaluateSigningStatus().canBroadcast:
+    confirmed = raw_input("Broadcast Transaction? [y/N]: ") or "false"
+    if util.strtobool(confirmed):
+      return broadcastTx(raw)
+    else:
+      print "Not broadcasting transaction."
+  else:
+    print "Transaction not complete."
 
   print "\nRaw Transaction:\n"
-  print binary_to_hex(tx.getSignedPyTx(doVerifySigs=False).serialize())
+  print raw
 
   print "\nBroadcast Transaction:\nhttps://blockchain.info/pushtx\n"
 
